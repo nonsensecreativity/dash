@@ -112,7 +112,7 @@ abstract class Dash {
 	 * @param string $type The native type as hint for the data type
 	 */
 	public static function findCallable(string $key, string $type = null) {
-		$fn = __NAMESPACE__ . self::mapNativeType($type) . '\\' . $key;
+		$fn = __NAMESPACE__ . '\\' . self::mapNativeType($type) . '\\' . $key;
 
 		if ( function_exists($fn) ) {
 			return $fn;
