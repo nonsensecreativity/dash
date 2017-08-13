@@ -9,7 +9,7 @@ declare(strict_types = 1);
  * file that was distributed with this source code.
  */
 
-namespace NSC\Dash\Callables\Universal;
+namespace NSC\Dash\Universal;
 
 /**
  * Check value is decimal

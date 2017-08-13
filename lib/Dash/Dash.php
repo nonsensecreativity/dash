@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace NSC\Dash;
 
-use function NSC\Dash\Callables\Strings\{snakeCase};
+use function NSC\Dash\Strings\{snakeCase};
 
 abstract class Dash {
 

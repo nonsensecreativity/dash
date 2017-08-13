@@ -9,7 +9,7 @@ declare(strict_types = 1);
  * file that was distributed with this source code.
  */
 
-namespace NSC\Dash\Callables\Iterables;
+namespace NSC\Dash\Iterables;
 
 use RecursiveIteratorIterator;
 use RecursiveArrayIterator;

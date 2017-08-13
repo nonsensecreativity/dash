@@ -8,12 +8,21 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace NSC\Dash\Callables\Numbers;
+namespace NSC\Dash\Numbers;
 
+/**
+ * Regular expression for capturing roman number string
+ */
 const ROMAN_MATCHER = '/^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/';
 
+/**
+ * Max number in roman
+ */
 const ROMAN_MAX_NUM = 3999;
 
+/**
+ * Roman Numbering map
+ */
 const ROMAN_MAPS = [
 	'M'  => 1000,
 	'CM' => 900,
@@ -124,9 +133,9 @@ function mean(...$ns) {
 }
 
 /**
- * Check comma separator of number
- * and return true if it's number without decimal point
- *
+ * Checking numeric type for two input
+ * return true if both integer
+ * 
  * @param int|float $n1
  * @param int|float $n2
  * @return boolean
@@ -138,6 +147,12 @@ function isInts($n1, $n2) {
 	);
 }
 
+/**
+ * Get median value from variadic input
+ *
+ * @param  int|float ...$ns
+ * @return int|float
+ */
 function median(...$ns) {
 	sort($ns);
 	$len = count($ns);

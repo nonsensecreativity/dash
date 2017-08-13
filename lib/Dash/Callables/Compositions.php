@@ -8,7 +8,7 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace NSC\Dash\Callables\Compositions;
+namespace NSC\Dash\Compositions;
 
 /**
  * @param  callable ...$fns Variadic parameter

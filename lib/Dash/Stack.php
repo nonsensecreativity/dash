@@ -10,7 +10,6 @@
 
 namespace NSC\Dash;
 
-use NSC\Dash\Sequence;
 use ArrayIterator;
 use ArrayObject;
 

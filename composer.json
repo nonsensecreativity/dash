@@ -10,13 +10,12 @@
             "email": "nonsensecreativity@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
 	"require": {
-		"php": "^7.1"
+		"php": ">=7.1"
 	},
 	"autoload": {
 		"psr-4": {
-			"\\NSC\\Dash\\": "lib/Dash"
+			"NSC\\Dash\\": "lib/Dash"
 		},
 		"files": [
     		"lib/Dash/Callables/Strings.php",
