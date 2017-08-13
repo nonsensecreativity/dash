@@ -49,13 +49,6 @@ abstract class Dash {
 	];
 
 	/**
-	 * Namespace prefix
-	 * 
-	 * @var string
-	 */
-	const FN_PREFIX = __NAMESPACE__ . '\\Callables\\';
-
-	/**
 	 * Calling functions through static binding
 	 *
 	 * @param  string $fn
@@ -119,7 +112,7 @@ abstract class Dash {
 	 * @param string $type The native type as hint for the data type
 	 */
 	public static function findCallable(string $key, string $type = null) {
-		$fn = self::FN_PREFIX . self::mapNativeType($type) . '\\' . $key;
+		$fn = __NAMESPACE__ . self::mapNativeType($type) . '\\' . $key;
 
 		if ( function_exists($fn) ) {
 			return $fn;
