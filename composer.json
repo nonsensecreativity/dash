@@ -15,6 +15,14 @@
 	"autoload": {
 		"psr4": {
 			"\\NSC\\Dash\\": "lib/Dash"
-		}
+		},
+		"files": [
+    		"lib/Dash/Callables/Strings.php",
+    		"lib/Dash/Callables/Iterables.php",
+    		"lib/Dash/Callables/Numbers.php",
+    		"lib/Dash/Callables/Compositions.php",
+    		"lib/Dash/Callables/DateTime.php",
+    		"lib/Dash/Callables/Universal.php"
+    	]
 	}
 }
