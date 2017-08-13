@@ -11,9 +11,9 @@ declare(strict_types = 1);
 
 namespace NSC\Dash;
 
-use NSC\Dash\Dash;
-use BadMethodCallException;
-
+/**
+ * Handling sequential method chain
+ */
 class Sequence {
 
 	/**
@@ -50,10 +50,6 @@ class Sequence {
 	 * @return $this
 	 */
 	public function __call(string $key, array $args) {
-		if ( stripos( $key, 'sort' ) !== FALSE ) {
-			return $this;
-		}
-		
 		$this->_queue[] = [ $key, $args ];
 		return $this;
 	}
