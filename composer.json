@@ -1,11 +1,12 @@
 {
     "name": "nonsensecreativity/dash",
     "description": "Kind of like LoDash but in PHP and lighter",
-    "type": "library",
+	"type": "library",
+	"version": "0.0.1",
     "license": "MIT",
     "authors": [
         {
-            "name": "Lucis Lynn",
+            "name": "Hermanto Lim",
             "email": "nonsensecreativity@gmail.com"
         }
     ],
