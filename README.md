@@ -1,7 +1,12 @@
 # DASH
-### Like LoDash but smaller
+**Kind of Like LoDash but smaller**
+
+**NOTE: Require at least PHP VERSION 7.1**
 
 ## Usage
+
+`composer require nonsensecreativity\dash`
+
 
 **Import and call the function**
 
