@@ -1,0 +1,19 @@
+{
+    "name": "nonsensecreativity/dash",
+    "description": "Kind of like LoDash but in PHP and lighter",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lucis Lynn",
+            "email": "nonsensecreativity@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+	"require": {},
+	"autoload": {
+		"psr4": {
+			"\\NSC\\Dash\\": "lib/Dash"
+		}
+	}
+}
