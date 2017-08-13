@@ -15,7 +15,7 @@
 		"php": "^7.1"
 	},
 	"autoload": {
-		"psr4": {
+		"psr-4": {
 			"\\NSC\\Dash\\": "lib/Dash"
 		},
 		"files": [
