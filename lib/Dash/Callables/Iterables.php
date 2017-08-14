@@ -25,7 +25,7 @@ use InvalidArgumentException;
  * @param  int 		 $lvl 	  The depth level. -1 For infinite
  * @return array
  */
-function _traverse(iterable $itr, callable $fn, bool $filter, int $lvl = -1) {
+function _traverse(iterable $itr, callable $fn, bool $filter, int $lvl = -1): array {
 	$o = NULL;
 
 	foreach( $itr as $k => $v ) {
@@ -50,12 +50,12 @@ function _traverse(iterable $itr, callable $fn, bool $filter, int $lvl = -1) {
  * Reversal iterations
  * 
  * @internal
- * @uses   \Dash\Callables\Iterable\toArray()
+ * @uses   \Dash\Iterable\toArray()
  * @param  iterable $itr
  * @param  int      $lvl
  * @return array
  */
-function _reverse(iterable $itr, int $lvl) {
+function _reverse(iterable $itr, int $lvl): array {
 	$arr = is_array($itr) ? $itr : toArray( $itr, $lvl !== 0 );
 	
 	if ( $lvl !== 0 ) {
@@ -72,48 +72,48 @@ function _reverse(iterable $itr, int $lvl) {
 /**
  * Apply a transformation to each iterable value
  * 
- * @uses   \Dash\Callables\Iterable\_traverse()
+ * @uses   \Dash\Iterable\_traverse()
  * @param  iterable $itr
  * @param  callable $fn
  * @return array
  */
-function map(iterable $itr, callable $fn) {
+function map(iterable $itr, callable $fn): array {
 	return _traverse($itr, $fn, false, 0);
 }
 
 /**
  * Apply a transformation to each iterable value
  * 
- * @uses   \Dash\Callables\Iterable\_traverse()
+ * @uses   \Dash\Iterable\_traverse()
  * @param  iterable $itr
  * @param  callable $fn
  * @return array
  */
-function mapDeep(iterable $itr, callable $fn) {
+function mapDeep(iterable $itr, callable $fn): array {
 	return _traverse($itr, $fn, false, -1);
 }
 
 /**
  * Filters elements of an array using a callback function
  * 
- * @uses   \Dash\Callables\Iterable\_traverse()
+ * @uses   \Dash\Iterable\_traverse()
  * @param  iterable $itr
  * @param  callable $fn
  * @return array
  */
-function filter(iterable $itr, callable $fn) {
+function filter(iterable $itr, callable $fn): array {
 	return _traverse($itr, $fn, true, 0);
 }
 
 /**
  * Recursively Filters elements of an array using a callback function
  * 
- * @uses   \Dash\Callables\Iterable\_traverse()
+ * @uses   \Dash\Iterable\_traverse()
  * @param  iterable $itr
  * @param  callable $fn
  * @return array
  */
-function filterDeep(iterable $itr, callable $fn) {
+function filterDeep(iterable $itr, callable $fn): array {
 	return _traverse($itr, $fn, true, -1);
 }
 
@@ -167,33 +167,33 @@ function reduceDeep(iterable $itr, callable $fn, $acc) {
 /**
  * Array reverse non recursive
  * 
- * @uses   \Dash\Callables\Iterables\_reverse()
+ * @uses   \Dash\Iterables\_reverse()
  * @param  iterable $itr
  * @return array
  */
-function reverse(iterable $itr) {
+function reverse(iterable $itr): array {
 	return _reverse($itr, 0);
 }
 
 /**
  * Array reverse resursive infinitely
  * 
- * @uses   \Dash\Callables\Iterables\_reverse()
+ * @uses   \Dash\Iterables\_reverse()
  * @param  iterable $itr
  * @return array
  */
-function reverseDeep(iterable $itr) {
+function reverseDeep(iterable $itr): array {
 	return _reverse($itr, -1);
 }
 
 /**
  * Flatten nested array into single level array
  * 
- * @uses   \Dash\Callables\Iterable\toIteratorI()
+ * @uses   \Dash\Iterable\toIteratorI()
  * @param  iterable $itr
  * @return array
  */
-function flatten(iterable $itr) {
+function flatten(iterable $itr): array {
 	$o = NULL;
 	foreach (toIteratorI($itr) as $v ) {
 		$o[] = $v;
@@ -211,7 +211,7 @@ function flatten(iterable $itr) {
  * @param  iterable $itr
  * @return array
  */
-function flattenAssoc(iterable $itr) {
+function flattenAssoc(iterable $itr): array {
 	$o = NULL;
 	foreach ( $itr as $k0 => $v0 ) {
 		if ( is_iterable( $v0 ) ) {
@@ -235,7 +235,7 @@ function flattenAssoc(iterable $itr) {
  * 						 fn( mixed $value, string|int $key, iterable $iterable ): mixed
  * @return array
  */
-function flatMap(iterable $itr, callable $fn) {
+function flatMap(iterable $itr, callable $fn): array {
 	$o = NULL;
 
 	foreach ( $itr as $k => $v ) {
@@ -260,7 +260,7 @@ function flatMap(iterable $itr, callable $fn) {
  * @param  int      $depth
  * @return array
  */
-function group(iterable $itr, callable $fn, int $depth = 0) {
+function group(iterable $itr, callable $fn, int $depth = 0): array {
 	$o = NULL;
 
 	foreach( $itr as $k => $v ) {
@@ -288,11 +288,11 @@ function group(iterable $itr, callable $fn, int $depth = 0) {
 /**
  * Grouping nested Iterable into it's type
  * 
- * @uses   \Dash\Callables\Iterable\toIteratorI()
+ * @uses   \Dash\Iterable\toIteratorI()
  * @param  iterable $itr
  * @return array
  */
-function groupByDepth(iterable $itr) {
+function groupByDepth(iterable $itr): array {
 	$rii = toIteratorI($itr);
 	$o = NULL;
 	foreach ( $rii as $k => $v ) {
@@ -304,12 +304,12 @@ function groupByDepth(iterable $itr) {
 /**
  * Grouping iterable by parent depth
  * 
- * @uses   \Dash\Callables\Iterable\toIteratorI()
+ * @uses   \Dash\Iterable\toIteratorI()
  * @param  iterable $itr
  * @param  string   $childPointer The array key holding the values of the children
  * @return array 
  */
-function groupByParent(iterable $itr, string $childPointer = 'children' ) {
+function groupByParent(iterable $itr, string $childPointer = 'children' ): array {
 	$rii = toIteratorI($itr, RecursiveIteratorIterator::SELF_FIRST );
 	$o = NULL;
 	foreach( $rii as $k => $v ) {
@@ -328,7 +328,7 @@ function groupByParent(iterable $itr, string $childPointer = 'children' ) {
  * @param  iterable $itr
  * @return array
  */
-function transpose(iterable $itr) {
+function transpose(iterable $itr): array {
 	$o = NULL;
 	foreach ($itr as $k0 => $v0 ) {
 		if (is_iterable($v0)) {
@@ -349,7 +349,7 @@ function transpose(iterable $itr) {
  * @param  mixed    $needle
  * @return bool
  */
-function hasValue(iterable $itr, $needle) {
+function hasValue(iterable $itr, $needle): bool {
 	foreach ($itr as $v) {
 		if ($needle === $v) {
 			return TRUE;
@@ -403,7 +403,7 @@ function hasKeys(iterable $itr, array $keys) {
  * @param  mixed $val
  * @return array
  */
-function insert(array $arr, int $idx, $val) {
+function insert(array $arr, int $idx, $val): array {
   	return array_merge(array_splice($arr, 0, $idx), $val, $arr);
 }
 
@@ -414,7 +414,7 @@ function insert(array $arr, int $idx, $val) {
  * @param  mixed $val
  * @return array
  */
-function prepend(array $arr, $val) {
+function prepend(array $arr, $val): array {
 	return array_merge([$val], $arr);
 }
 
@@ -425,7 +425,7 @@ function prepend(array $arr, $val) {
  * @param  mixed $val
  * @return iterable
  */
-function append(array $arr, $val) {
+function append(array $arr, $val): array {
 	return array_merge($arr, [$val]);
 } 
 
@@ -435,7 +435,7 @@ function append(array $arr, $val) {
  * @param  array $arr
  * @return array
  */
-function unique(array $arr) {
+function unique(array $arr): array {
 	return array_keys(array_flip($arr));
 }
 
@@ -446,7 +446,7 @@ function unique(array $arr) {
  * @param  callable $fn
  * @return array
  */
-function takeWhile(iterable $itr, callable $fn) {
+function takeWhile(iterable $itr, callable $fn): array {
 	$o = NULL;
 	foreach ($itr as $k => $v) {
 		if ( $fn($v, $k, $itr) !== TRUE ) {
@@ -465,7 +465,7 @@ function takeWhile(iterable $itr, callable $fn) {
  * @param  callable $fn
  * @return array
  */
-function takeLastWhile(iterable $itr, callable $fn) {
+function takeLastWhile(iterable $itr, callable $fn): array {
 	$o = NULL;
 	for( end($itr); key($itr) !== NULL; prev($itr) ) {
 		$v = method_exists( $itr, 'current' )
@@ -487,7 +487,7 @@ function takeLastWhile(iterable $itr, callable $fn) {
  * @param  int      $idx
  * @return array
  */
-function take(iterable $itr, int $idx) {
+function take(iterable $itr, int $idx): array {
 	$arr = !is_array($itr) ? toArray($itr) : $itr;
 	return array_slice($itr, 0, $idx);
 }
@@ -499,7 +499,7 @@ function take(iterable $itr, int $idx) {
  * @param  int      $idx
  * @return array
  */
-function takeLast(iterable $itr, int $idx) {
+function takeLast(iterable $itr, int $idx): array {
 	$arr = !is_array($itr) ? toArray($itr) : $itr;
 	return array_slice($itr, - $idx, $idx);
 }
@@ -577,7 +577,7 @@ function toArray(iterable $itr, $recursive = TRUE)
  * (isset($data['foo']['bar']['baz'])) ? $data['foo']['bar']['baz'] : NULL;
  * 
  * // The above equals
- * \Dash\Callables\Iterables\getIn($data, ['foo', 'bar', 'baz']);
+ * \Dash\Iterables\getIn($data, ['foo', 'bar', 'baz']);
  * 
  * @param iterable    $data
  * @param iterable    $keys
@@ -601,7 +601,7 @@ function getIn(iterable $data, iterable $keys, $default = NULL)
  * (isset($itr['foo']['bar']['baz'])) ? $itr['foo']['bar']['baz'] = $val
  * 
  * // The above equals
- * \Dash\Callables\Iterables\updateIn($itr, ['foo', 'bar', 'baz'], $val)
+ * \Dash\Iterables\updateIn($itr, ['foo', 'bar', 'baz'], $val)
  * 
  * @param iterable  $itr
  * @param iterable  $keys
@@ -636,7 +636,7 @@ function update(iterable $itr, iterable $keys, $val) {
  * (isset($itr['foo']['bar']['baz'])) ? $itr['foo']['bar']['baz'] = $itr['foo']['bar']['baz'] = $val;
  * 
  * // The above equals
- * \Dash\Callables\Iterables\assign($itr, ['foo', 'bar', 'baz'], $val);
+ * \Dash\Iterables\assign($itr, ['foo', 'bar', 'baz'], $val);
  * 
  * @param iterable    $itr
  * @param iterable    $keys

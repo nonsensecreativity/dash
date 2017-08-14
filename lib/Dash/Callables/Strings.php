@@ -10,18 +10,18 @@ declare(strict_types = 1);
  */
 namespace NSC\Dash\Strings;
 
-use function NSC\Dash\Callables\Universal\{isDecimal};
+use function NSC\Dash\Universal\{isDecimal};
 
 /**
  * Convert string into pascal case
  * 
  * @example
- * \Dash\Callables\Strings\pascalCase('my_snake_case') => MySnakeCase
+ * \Dash\Strings\pascalCase('my_snake_case') => MySnakeCase
  * 
  * @param  string $str
  * @return string
  */
-function pascalCase(string $str) {
+function pascalCase(string $str): string {
 	return str_replace(" ", "", ucwords(strtr($str, "_-", "  ")));
 }
 
@@ -31,12 +31,12 @@ function pascalCase(string $str) {
  * basically it's a PascalCase with lower case first character
  * 
  * @example
- * \Dash\Callables\Strings\camelCase('my_snake_case') => mySnakeCase
+ * \Dash\Strings\camelCase('my_snake_case') => mySnakeCase
  * 
  * @param  string $str
  * @return string
  */
-function camelCase(string $str) {
+function camelCase(string $str): string {
 	return lcfirst(pascalCase($str));
 }
 
@@ -44,82 +44,13 @@ function camelCase(string $str) {
  * Convert string into snake case
  * 
  * @example
- * \Dash\Callables\Strings\snakeCase('MyPascalCase') => my_snake_case
+ * \Dash\Strings\snakeCase('MyPascalCase') => my_snake_case
  * 
  * @param  string $str
  * @return string
  */
-function snakeCase(string $str) {
+function snakeCase(string $str): string {
 	return strtolower(preg_replace('~(?<=\\w)([A-Z])~', '_$1', $str));
-}
-
-/**
- * Return the indeox of first occurrence of the needle
- *
- * @param  string $haystack
- * @param  string $needle
- * @return int
- */
-function indexOf(string $haystack, string $needle) {
-	return strpos($haystack, $needle);
-}
-
-/**
- * Return the index of the last occurrence on the string
- *
- * @param string $haystack
- * @param string $needle
- * @return void
- */
-function lastIndexOf(string $haystack, string $needle) {
-	return strrpos($haystack, $needle);
-}
-
-/**
- * Return false when input string contains characters
- * not in the specified characters
- *
- * @param  string $str
- * @param  string ...$chars
- * @return boolean
- */
-function containsOnly(string $str, string ...$chars) {
-	$arr = str_split( $str );
-	return empty( array_diff( $arr, $chars ) );
-}
-
-/**
- * Return true if the string contains none of the characters specified
- *
- * @param  string $str
- * @param  string ...$chars
- * @return boolean
- */
-function containsNone(string $str, string ...$chars) {
-	return !containsAny($str, ...$chars);
-}
-
-/**
- * Check whether a string contains any of the characters specified
- * Return true if string contains at least one of the specified characters
- * 
- * @example
- * <code>
- * use function Dash\Callables\Strings\{containsAny};
- * containsAny('mystring', 'a', 'b', 'c', 'd', 'y' );
- * </code>
- * 
- * @param  string $str
- * @param  string ...$chars
- * @return boolean
- */
-function containsAny(string $str, string ...$chars) {
-	foreach ( $chars as $c ) {
-		if ( stripos( $str, $c ) !== FALSE ) {
-			return TRUE;
-		}
-	}
-	return FALSE;
 }
 
 /**
@@ -129,24 +60,100 @@ function containsAny(string $str, string ...$chars) {
  * @param  int     $index  Default index is 0
  * @return string  Return empty if index is out of range.
  */
-function charAt(string $str, int $index = 0) {
-	if ( strlen($str) > $index ) {
+function charAt(string $str, int $index = 0): string {
+	if ( $index > strlen($str) ) {
 		return '';
 	}
 
-	return substr($str, $index, 1);
+	return $str{$index};
+}
+
+/**
+ * Return the indeox of first occurrence of the needle
+ *
+ * @param  string $haystack
+ * @param  string $needle
+ * @return int
+ */
+function indexOf(string $haystack, string $needle): int {
+	$index = strpos($haystack, $needle);
+	return $index !== FALSE ? $index : -1;
+}
+
+/**
+ * Return the index of the last occurrence on the string
+ *
+ * @param string $haystack
+ * @param string $needle
+ * @return void
+ */
+function lastIndexOf(string $haystack, string $needle): int {
+	$index = strrpos($haystack, $needle);
+	return $index !== FALSE ? $index : -1;
+}
+
+/**
+ * Return false when input string contains characters
+ * not in the specified characters
+ *
+ * @param  string $str
+ * @param  string ...$chars
+ * @return bool
+ */
+function containsOnly(string $str, string ...$chars): bool {
+	foreach ($chars as $c) {
+		if ( strpos( $str, $c ) === FALSE ) {
+			return FALSE;
+		}
+	}
+	
+	return TRUE;
+}
+
+/**
+ * Return true if the string contains none of the characters specified
+ *
+ * @param  string $str
+ * @param  string ...$chars
+ * @return bool
+ */
+function containsNone(string $str, string ...$chars): bool {
+	return !containsAny($str, ...$chars);
+}
+
+/**
+ * Check whether a string contains any of the characters specified
+ * Return true if string contains at least one of the specified characters
+ * 
+ * @example
+ * <code>
+ * use function Dash\Strings\{containsAny};
+ * containsAny('mystring', 'a', 'b', 'c', 'd', 'y' );
+ * </code>
+ * 
+ * @param  string $str
+ * @param  string ...$chars
+ * @return bool
+ */
+function containsAny(string $str, string ...$chars): bool {
+	foreach ( $chars as $c ) {
+		if ( strpos( $str, $c ) !== FALSE ) {
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 /**
  * Truncate a string by adding an ending mark
  * 
  * @param  string  $str
- * @param  int     $max  Max character, including whitespace. Default to 200
- * @param  string  $mark Default '...' Ellipsis
+ * @param  int     $limit Max character, including whitespace. Default to 200
+ * @param  string  $end   Default '...' Ellipsis
  * @return string
  */
-function truncate(string $str, int $max = 200, $mark = '...') {
-	return substr($str, 0, $max) . $mark;
+function truncate(string $str, int $limit = 200, $end = '...'): string {
+	return implode(' ', array_slice( explode(' ', $str, $limit + 1), 0, $limit ) ) . $end;
 }
 
 /**
@@ -155,7 +162,7 @@ function truncate(string $str, int $max = 200, $mark = '...') {
  * @param  string $str
  * @return int
  */
-function length(string $str) {
+function length(string $str): int {
 	return strlen($str);
 }
 
