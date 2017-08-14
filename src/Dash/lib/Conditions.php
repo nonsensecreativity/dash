@@ -17,5 +17,5 @@ namespace NSC\Dash\Conditions;
  * @return bool
  */
 function isDecimal($num): bool {
-	return floor((float)$num) !== $num;
+	return floor((float) $num) !== (float) $num;
 }

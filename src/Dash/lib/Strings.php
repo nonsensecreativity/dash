@@ -122,7 +122,9 @@ function containsAny(string $str, string ...$chars): bool {
  * @return string
  */
 function truncate(string $str, int $limit = 200, $end = '...'): string {
-	return implode(' ', array_slice( explode(' ', $str, $limit + 1), 0, $limit ) ) . $end;
+	$s = explode(' ', $str, $limit + 1);
+	array_pop($s);
+	return implode(' ', $s) . $end;
 }
 
 /**

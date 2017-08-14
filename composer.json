@@ -24,7 +24,7 @@
     		"src/Dash/lib/Iterables.php",
     		"src/Dash/lib/Numbers.php",
     		"src/Dash/lib/Strings.php",
-    		"src/Dash/lib/Universal.php"
+    		"src/Dash/lib/Misc.php"
     	]
 	},
     "require-dev": {
