@@ -138,7 +138,7 @@ function mean(...$ns) {
  * 
  * @param int|float $n1
  * @param int|float $n2
- * @return boolean
+ * @return bool
  */
 function isInts($n1, $n2) {
 	return (
@@ -159,4 +159,16 @@ function median(...$ns) {
 	$odd = $len % 2 !== 0;
 	return $odd ? ( $ns[ $len / 2 ] )
 				: ( $ns[ ($len - 1 ) / 2 ] + $ns[ $len / 2 ] ) / 2;
+}
+
+/**
+ * Check number is between range
+ *
+ * @param  int|float $n     The number
+ * @param  int|float $lower The lower boundary
+ * @param  int|float $upper The upper boundary
+ * @return bool
+ */
+function between(float $n, float $lower, float $upper): bool {
+	return ( $n >= $lower ) && ( $n <= $upper );
 }

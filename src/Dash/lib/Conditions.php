@@ -8,18 +8,14 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace NSC\Dash\Universal;
+namespace NSC\Dash\Conditions;
 
 /**
- * Check value is decimal
+ * Check input value for decimal posibility
  *
- * @param string|int|float $n
- * @return boolean
+ * @param  mixed $num
+ * @return bool
  */
-function isDecimal($n) {
-	if ( is_string($n) ) {
-		return (stripos( $n, '.' ) !== FALSE);
-	}
-
-	return floor($n) !== $n;
+function isDecimal($num): bool {
+	return floor((float)$num) !== $num;
 }

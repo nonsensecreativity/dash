@@ -56,11 +56,12 @@ abstract class Dash {
 	 * @return mixed
 	 */
 	public static function __callStatic(string $fn, array $args) {
-		if ( empty( $data = $args[0] ) ) {
-			throw new \LogicException();
-		}
-		
-		$callable = self::findCallable($fn, gettype( $data ));
+		$callable = self::findCallable(
+			$fn,
+			count( $args ) > 0
+				? gettype( $args[0] )
+				: NULL
+		);
 		return $callable(...$args);
 	}
 
@@ -100,8 +101,10 @@ abstract class Dash {
 			case 'float':
 			case 'double':
 				return 'Numbers';
-			default:
+			case 'string':
 				return 'Strings';
+			default:
+				return NULL;
 		}
 	}
 
@@ -111,13 +114,29 @@ abstract class Dash {
 	 * @param string $key  Part of the maybe callable function
 	 * @param string $type The native type as hint for the data type
 	 */
-	public static function findCallable(string $key, string $type = null) {
-		$fn = __NAMESPACE__ . '\\' . self::mapNativeType($type) . '\\' . $key;
+	public static function findCallable(string $key, string $type = NULL) {
+		if ( $type !== NULL ) {
+			$nt = self::mapNativeType($type);
+			$fn = __NAMESPACE__ . '\\' . $nt . '\\' . $key;
 
-		if ( function_exists($fn) ) {
-			return $fn;
+			if ( function_exists($fn) ) {
+				return $fn;
+			}
+		} else {
+			$libs = [
+				'Universal',
+				'Compositions',
+				'DateTime'
+			];
+
+			foreach ( $libs as $lib ) {
+				$fn = __NAMESPACE__ . '\\' . $lib . '\\' . $key;
+				if ( function_exists( $fn ) ) {
+					return $fn;
+				}
+			}
 		}
-
+		
 		// all PHP built-in functions use snake_case naming
 		$key = snakeCase($key);
 		$fn = false;
