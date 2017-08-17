@@ -127,4 +127,6 @@ Temporary Items
 /node_modules
 /tmp
 /temp
+temp
+temp/*
 composer.lock
