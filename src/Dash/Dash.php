@@ -10,7 +10,7 @@ declare(strict_types = 1);
  */
 namespace NSC\Dash;
 
-use function NSC\Dash\Strings\{snakeCase};
+use function NSC\Dash\Strings;
 use FilesystemIterator as Fsi;
 use Generator;
 use BadMethodCallException;
@@ -18,16 +18,19 @@ use BadMethodCallException;
 abstract class Dash {
 
 	/**
-	 * These native array functions have a reverse arity
-	 * If called, will use the default one provided by the library
+	 * Some aliases of native functions
 	 * 
 	 * @var array NATIVE_ALIASES;
 	 */
 	const NATIVE_ALIASES = [
-		'array_key_exists' => 'hasKey',
-		'in_array'         => 'hasValue',
-		'keyExists'        => 'hasKey',
-		'inArray'   	   => 'hasValue'
+		'array_key_exists'     => 'hasKey',
+		'in_array'             => 'hasValue',
+		'keyExists'            => 'hasKey',
+		'inArray'              => 'hasValue',
+		'array_walk'           => 'map',
+		'walk'                 => 'map',
+		'array_walk_recursive' => 'mapDeep',
+		'walkRecursive'        => 'mapDeep'
 	];
 
 	/**
@@ -38,32 +41,14 @@ abstract class Dash {
 	 * @var array BANNED_NATIVE_FUNCTION;
 	 */
 	const BANNED_NATIVE_FUNCTION = [
-		'array_walk' => 'map',
-		'array_walk_recursive' => 'mapDeep',
-		'walk' => 'map',
-		'walkRecursive' => 'mapDeep',
-		'reset' => '',
-		'prev' => '',
-		'next' => '',
-		'list' => '',
+		'reset'   => '',
+		'prev'    => '',
+		'next'    => '',
+		'list'    => '',
 		'compact' => '',
 		'extract' => '',
-		'end' => ''
+		'end'     => ''
 	];
-	
-	/**
-	 * List of available functions
-	 *
-	 * @var array $funcs
-	 */
-	protected static $funcs;
-
-	/**
-	 * List of available library
-	 *
-	 * @var array $libs
-	 */
-	protected static $libs;
 
 	/**
 	 * Calling functions through static binding
@@ -119,9 +104,9 @@ abstract class Dash {
 	 */
 	protected static function findCallable(string $key, string $lib = NULL) {
 		return (
-			self::checkFunction($lib, $key) ?:
-			self::checkDashFunction($key)   ?:
-			self::checkNativeFunction($key) ?:
+			self::_checkFunction($lib, $key) ?:
+			self::_checkDashFunction($key)   ?:
+			self::_checkNativeFunction($key) ?:
 			FALSE
 		);
 	}
@@ -132,9 +117,9 @@ abstract class Dash {
 	 * @param  string $key
 	 * @return false|callable
 	 */
-	private static function checkDashFunction(string $key) {
+	private static function _checkDashFunction(string $key) {
 		foreach ( static::getLibs() as $lib ) {
-			if ( \function_exists( $fn = "{$lib}\\{$key}" ) ) {
+			if ( is_callable( $fn = [ $lib, $key ] ) ) {
 				return $fn;
 			}
 		}
@@ -147,13 +132,10 @@ abstract class Dash {
 	 * @param  string $key
 	 * @return false|callable
 	 */
-	private static function checkNativeFunction(string $key) {
-		$key = snakeCase($key);
+	private static function _checkNativeFunction(string $key) {
+		$key = Strings::snakeCase($key);
 		foreach( ['str_', 'array_'] as $lib ) {
-			if (
-				!isset( static::BANNED_NATIVE_FUNCTION[ $key ] ) &&
-				is_callable( $fn = "{$lib}{$key}" )
-			) {
+			if ( is_callable( $fn = "{$lib}{$key}" ) ) {
 				return $fn;
 			}
 		}
@@ -167,9 +149,9 @@ abstract class Dash {
 	 * @param  string $key
 	 * @return false|callable
 	 */
-	private static function checkFunction(string $lib, string $key) {
-		$fn = '\\' . __NAMESPACE__ . "\\{$lib}\\{$key}";
-		return is_callable( $fn ) ? $fn : FALSE;
+	private static function _checkFunction(string $lib, string $key) {
+		$ns = __NAMESPACE__;
+		return is_callable( $fn = [ "{$ns}\\{$lib}", $key ] ) ? $fn : FALSE;
 	}
 
 	/**
@@ -184,7 +166,19 @@ abstract class Dash {
 		);
 
 		foreach ( $files as $file ) {
-			yield $file->getBasename('.php') => __NAMESPACE__ . '\\' . $file->getBasename('.php');
+			$basename = $file->getBasename('.php');
+			yield $basename => __NAMESPACE__ . "\\{$basename}";
 		}
+	}
+
+	/**
+	 * Create a new sequence instance for immediate chaining
+	 * because calling new Sequence($v) aren't chainable
+	 *
+	 * @param  mixed $value
+	 * @return \Dash\Sequence
+	 */
+	public static function seq($value) {
+		return new Sequence($value);
 	}
 }

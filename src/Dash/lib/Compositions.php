@@ -8,49 +8,62 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace NSC\Dash\Compositions;
+namespace NSC\Dash;
 
-/**
- * @param  callable ...$fns Variadic parameter
- * @return callable
- */
-function compose(callable ...$fns) {
-    $prev = array_shift($fns);
+class Compositions {
 
-    foreach ($fns as $fn) {
-        $prev = function (...$args) use ($fn, $prev) {
-            return $prev($fn(...$args));
-        };
-    }
+	/**
+	 * @param  callable ...$fns Variadic parameter
+	 * @return callable
+	 */
+	public static function compose(callable ...$fns) {
+		$prev = array_shift($fns);
 
-    return $prev;
-}
+		foreach ($fns as $fn) {
+			$prev = function (...$args) use ($fn, $prev) {
+				return $prev($fn(...$args));
+			};
+		}
+		return $prev;
+		//return self::pipe(...array_reverse($fns));
+	}
 
-/**
- * @param  callable ...$fns Variadic parameter
- * @return callable
- */
-function pipe(callable ...$fns) {
-    return compose(...array_reverse($fns));
-}
+	/**
+	 * @param  callable ...$fns Variadic parameter
+	 * @return callable
+	 */
+	public static function pipe(callable ...$fns) {
+		/*$last = array_pop($fns);
 
-/**
- * @param  callable $fn
- * @param  array    $args
- * @return callable
- */
-function apply(callable $fn, array $args) {
-    return $fn(...$args);
-}
+		foreach ($fns as $fn) {
+			$last = function(...$args) use ($fn, $last) {
+				return $last($fn(...$args));
+			};
+		}
 
-/**
- * Reverse callable arity
- * 
- * @param  callable $fn
- * @return callable
- */
-function flip(callable $fn) {
-	return function() use ($fn) {
-        return $fn(...array_reverse(func_get_args()));
-    }; 
+		return $last;*/
+		return self::compose(...array_reverse($fns));
+	}
+
+	/**
+	 * @param  callable $fn
+	 * @param  array    $args
+	 * @return callable
+	 */
+	public static function apply(callable $fn, array $args) {
+		return $fn(...$args);
+	}
+
+	/**
+	 * Reverse callable arity
+	 * 
+	 * @param  callable $fn
+	 * @return callable
+	 */
+	public static function flip(callable $fn) {
+		return function() use ($fn) {
+			return $fn(...array_reverse(func_get_args()));
+		}; 
+	}
+
 }

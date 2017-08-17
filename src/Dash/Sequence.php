@@ -12,6 +12,8 @@ namespace NSC\Dash;
 
 /**
  * Handling sequential method chain
+ * 
+ * @method array toArray(iterable $itr)
  */
 class Sequence {
 
@@ -32,7 +34,7 @@ class Sequence {
 	/**
 	 * Class main constructor
 	 * 
-	 * @param array $value
+	 * @param mixed $value
 	 */
 	public function __construct( $value ) {
 		$this->_value = $value;
@@ -49,7 +51,9 @@ class Sequence {
 	 * @return $this
 	 */
 	public function __call(string $key, array $args) {
-		$this->_queue[] = [ $key, $args ];
+		$this->_queue[] = function($v) use ($key, $args) {
+			return [ Dash::class, $key ]( $v, ...$args );
+		};
 		return $this;
 	}
 
@@ -61,25 +65,9 @@ class Sequence {
 	public function result() {
 		if ( !empty($this->_queue) ) {
 			foreach ( $this->_queue as $queue ) {
-				$this->_value = [
-					Dash::class,
-					$queue[0]
-				]( $this->_value, ...$queue[1] );
+				$this->_value = $queue($this->_value);
 			}
 		}
-
 		return $this->_value;
 	}
-
-	/**
-	 * Create a new sequence instance for immediate chaining
-	 * because calling new Sequence($v) aren't chainable
-	 *
-	 * @param  mixed $value
-	 * @return \Dash\Sequence
-	 */
-	public static function from($value) {
-		return new static($value);
-	}
-
 }

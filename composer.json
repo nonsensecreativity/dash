@@ -15,19 +15,21 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"NSC\\Dash\\": "src/Dash"
-		},
-		"files": [
-			"src/Dash/lib/Compositions.php",
-			"src/Dash/lib/Conditions.php",
-    		"src/Dash/lib/DateTime.php",
-    		"src/Dash/lib/Iterables.php",
-    		"src/Dash/lib/Numbers.php",
-    		"src/Dash/lib/Strings.php",
-    		"src/Dash/lib/Misc.php"
-    	]
+			"NSC\\Dash\\": [
+				"src/Dash",
+				"src/Dash/lib"
+			]
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"NSC\\Dash\\Test\\": "tests"
+		}
 	},
     "require-dev": {
-        "phpunit/phpunit": "^6.3"
+        "phpunit/phpunit": "^6.3",
+        "atoum/atoum": "^3.1",
+        "atoum/stubs": "^2.5",
+        "phpmd/phpmd": "^2.6"
     }
 }

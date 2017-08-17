@@ -8,14 +8,17 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace NSC\Dash\Conditions;
+namespace NSC\Dash;
 
-/**
- * Check input value for decimal posibility
- *
- * @param  mixed $num
- * @return bool
- */
-function isDecimal($num): bool {
-	return floor((float) $num) !== (float) $num;
+class Conditions {
+	/**
+	 * Check input value for decimal posibility
+	 *
+	 * @param  mixed $num
+	 * @return bool
+	 */
+	public static function isDecimal($num): bool {
+		return floor((float) $num) !== (float) $num;
+	}
 }
+

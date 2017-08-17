@@ -16,12 +16,11 @@ final class StringsTest extends TestCase {
 		$this->assertEquals('', Dash::charAt($str, -1));
 		$this->assertEquals('', Dash::charAt($str, 99));
 		$this->assertEquals('o', Dash::charAt($str, 1));
-		$this->assertEmpty(Strings\charAt($str, 99) );
-		$this->assertEmpty(Strings\charAt($str, -1));
-		$this->assertEquals('', Strings\charAt($str, -1));
-		$this->assertEquals('', Strings\charAt($str, 99));
-		$this->assertEquals('o', Strings\charAt($str, 1));
-		
+		$this->assertEmpty(Strings::charAt($str, 99) );
+		$this->assertEmpty(Strings::charAt($str, -1));
+		$this->assertEquals('', Strings::charAt($str, -1));
+		$this->assertEquals('', Strings::charAt($str, 99));
+		$this->assertEquals('o', Strings::charAt($str, 1));
 	}
 
 	public function testCharCodeAt() {
@@ -29,9 +28,9 @@ final class StringsTest extends TestCase {
 		$this->assertNan(Dash::charCodeAt($str, -1));
 		$this->assertNan(Dash::charCodeAt($str, 99));
 		$this->assertEquals(76, Dash::charCodeAt($str, 0));
-		$this->assertNan(Strings\charCodeAt($str, -1));
-		$this->assertNan(Strings\charCodeAt($str, 99));
-		$this->assertEquals(111, Strings\charCodeAt($str, 1));
+		$this->assertNan(Strings::charCodeAt($str, -1));
+		$this->assertNan(Strings::charCodeAt($str, 99));
+		$this->assertEquals(111, Strings::charCodeAt($str, 1));
 	}
 
 	public function testIndexOf() {
