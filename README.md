@@ -8,10 +8,10 @@
 `composer require nonsensecreativity\dash`
 
 
-**Import and call the function**
+**Import and call the lib static method**
 
 ```php
-use function NSC\Dash\Callables\Iterables\{flatMap};
+use function NSC\Dash\Iterables;
 
 /**
  * All iterable hook always provide
@@ -24,12 +24,12 @@ use function NSC\Dash\Callables\Iterables\{flatMap};
  * @param  iterable $itr
  * @return iterable
  */
-$flatMap = flatMap([1, 2, 3, 4], function(int $v, int $k, iterable $itr) {
+$flatMap = Iterables::flatMap([1, 2, 3, 4], function(int $v, int $k, iterable $itr) {
 	return [$v + 1, $v];
 });
 ```
 
-**or use via static method**
+**or use via dash static method which will automatically redirecting the called method to proper class**
 
 ```php
 use NSC\Dash\Dash;
@@ -57,5 +57,5 @@ $seq->flatten()
 **TODO**
 
 
-- [ ] Add Test Case
+- [ ] Add Test Case (some sample already added)
 - [ ] More Functionality
