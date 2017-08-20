@@ -181,4 +181,20 @@ abstract class Dash {
 	public static function seq($value) {
 		return new Sequence($value);
 	}
+
+	/**
+	 * Get a method
+	 *
+	 * @param  array|string $v
+	 * @return callable
+	 */
+	public static function get($v) {
+		if ( is_callable( [self::class, $v] ) ) {
+			return [self::class, $v];
+		}
+		
+		if ( is_callable($v) ) {
+			return $v;
+		}
+	}
 }

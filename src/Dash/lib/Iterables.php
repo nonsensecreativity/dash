@@ -17,11 +17,6 @@ use InvalidArgumentException;
 use Generator;
 
 class Iterables {
-
-	public function __call( $method, $params ) {
-		return \method_exists( self::class, $method ) ?
-			[ self::class, $method ]( ...$params ) : NULL;
-	}
 	
 	/**
 	 * Reversal iterations
@@ -55,7 +50,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function map(iterable $itr, callable $fn): array {
-		$o = NULL;
+		$o = [];
 		foreach ( $itr as $k => $v ) {
 			$o[$k] = $fn($v, $k, $itr);
 		}
@@ -63,7 +58,7 @@ class Iterables {
 	}
 
 	/**
-	 * Apply a transformation to each iterable value
+	 * Recursively apply a transformation to each iterable value
 	 * 
 	 * @uses   \Dash\Iterables::_traverse()
 	 * @param  iterable $itr
@@ -71,7 +66,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function mapDeep(iterable $itr, callable $fn): array {
-		$o = NULL;
+		$o = [];
 		foreach ( $itr as $k => $v ) {
 			$o[$k] = is_iterable($v) ? self::mapDeep($v, $fn) : $fn($v, $k, $itr);
 		}
@@ -79,7 +74,7 @@ class Iterables {
 	}
 
 	/**
-	 * Filters elements of an array using a callback function
+	 * Filter elements of an array using a callback function
 	 * 
 	 * @uses   \Dash\Iterables::_traverse()
 	 * @param  iterable $itr
@@ -87,7 +82,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function filter(iterable $itr, callable $fn): array {
-		$o = NULL;
+		$o = [];
 		foreach ( $itr as $k => $v ) {
 			if ( $fn( $v, $k, $itr ) === TRUE ) {
 				$o[$k] = $v;
@@ -97,7 +92,7 @@ class Iterables {
 	}
 
 	/**
-	 * Recursively Filters elements of an array using a callback function
+	 * Recursively Filter elements of an array using a callback function
 	 * 
 	 * @uses   \Dash\Iterables::_traverse()
 	 * @param  iterable $itr
@@ -105,7 +100,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function filterDeep(iterable $itr, callable $fn): array {
-		$o = NULL;
+		$o = [];
 		foreach ( $itr as $k => $v ) {
 			if ( is_iterable($v) ) {
 				$o[$k] = self::filterDeep($v, $fn);
@@ -119,7 +114,7 @@ class Iterables {
 	}
 
 	/**
-	 * Array reducer
+	 * Array reduce non recursive
 	 * 
 	 * @param  iterable $itr
 	 * @param  callable $fn  The transformer callback
@@ -177,7 +172,7 @@ class Iterables {
 	}
 
 	/**
-	 * Array reverse resursive infinitely
+	 * Array reverse resursive
 	 * 
 	 * @uses   \Dash\Iterables\_reverse()
 	 * @param  iterable $itr
@@ -195,7 +190,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function flatten(iterable $itr): array {
-		$o = NULL;
+		$o = [];
 		foreach (self::toIteratorI($itr) as $v ) {
 			$o[] = $v;
 		}
@@ -213,7 +208,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function flattenAssoc(iterable $itr): array {
-		$o = NULL;
+		$o = [];
 		foreach ( $itr as $k0 => $v0 ) {
 			if ( is_iterable( $v0 ) ) {
 				foreach( self::flattenAssoc($v0) as $k1 => $v1 ) {
@@ -237,7 +232,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function flatMap(iterable $itr, callable $fn): array {
-		$o = NULL;
+		$o = [];
 
 		foreach ( $itr as $k => $v ) {
 			$r = $fn($v, $k, $itr);
@@ -262,23 +257,17 @@ class Iterables {
 	 * @return array
 	 */
 	public static function group(iterable $itr, callable $fn, int $depth = 0): array {
-		$o = NULL;
+		$o = [];
 
 		foreach( $itr as $k => $v ) {
-
 			if ( is_iterable( $v ) && $depth > 0 ) {
-
 				$o[$k] = self::group( $v, $fn, $depth - 1 );
-				
 			} else {
-
 				$g = $fn($v, $k, $itr);
 				$g = !empty($g) ? $g : (string) $g;
-				
 				if ( !isset( $o[$g] ) ) {
 					$o[$g] = [];
 				}
-
 				$o[$g][] = $v;
 			}
 		}
@@ -295,8 +284,8 @@ class Iterables {
 	 */
 	public static function groupByDepth(iterable $itr): array {
 		$rii = self::toIteratorI($itr);
-		$o = NULL;
-		foreach ( $rii as $k => $v ) {
+		$o = [];
+		foreach ( $rii as $v ) {
 			$o[$rii->getDepth()][] = $v;
 		}
 		return $o;
@@ -312,7 +301,7 @@ class Iterables {
 	 */
 	public static function groupByParent(iterable $itr, string $childPointer = 'children' ): array {
 		$rii = self::toIteratorI($itr, RecursiveIteratorIterator::SELF_FIRST );
-		$o = NULL;
+		$o = [];
 		foreach( $rii as $k => $v ) {
 			if ( $k !== $childPointer ) {
 				continue;
@@ -330,7 +319,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function transpose(iterable $itr): array {
-		$o = NULL;
+		$o = [];
 		foreach ($itr as $k0 => $v0 ) {
 			if (is_iterable($v0)) {
 				foreach ( $v0 as $k1 => $v1 ) {
@@ -382,62 +371,160 @@ class Iterables {
 	 * @param  array    $keys
 	 * @return bool
 	 */
-	public static function hasKeys(iterable $itr, array $keys) {
+	public static function hasKeys(iterable $itr, array $keys): bool {
 		$current = $itr;
 
 		foreach ($keys as $key) {
-			if (!isset($current[$key])) {
+			if ( !isset( $current[$key] ) ) {
 				return FALSE;
 			}
-
 			$current = $current[$key];
 		}
 
-		return $current;
+		return TRUE;
+	}
+
+
+	/**
+	 * Get value from specific array key
+	 * 
+	 * @example
+	 * // in native PHP
+	 * (isset($data['foo']['bar']['baz'])) ? $data['foo']['bar']['baz'] : NULL;
+	 * 
+	 * // The above equals
+	 * \Dash\Iterables\getIn($data, ['foo', 'bar', 'baz']);
+	 * 
+	 * @param  iterable    $data
+	 * @param  iterable    $keys
+	 * @param  mixed|NULL  $default
+	 * @return mixed
+	 */
+	public static function get(iterable $data, iterable $keys, $default = NULL)
+	{
+		if (count($keys) === 1 && isset($data[$keys[0]])) {
+			return $data[$keys[0]];
+		}
+
+		return ($v = self::hasKeys($data, $keys)) ? $v : $default;
 	}
 
 	/**
-	 * Insertion
+	 * Update value from specific array key
 	 * 
-	 * @param  array $arr
-	 * @param  int   $idx
-	 * @param  mixed $val
+	 * @example
+	 * 
+	 * // in native PHP
+	 * (isset($itr['foo']['bar']['baz'])) ? $itr['foo']['bar']['baz'] = $val
+	 * 
+	 * // The above equals
+	 * \Dash\Iterables\updateIn($itr, ['foo', 'bar', 'baz'], $val)
+	 * 
+	 * @param  iterable  $itr
+	 * @param  iterable  $keys
+	 * @param  mixed     $val
+	 * @return iterable
+	 * @throws \InvalidArgumentException
+	 */
+	public static function update(iterable $itr, iterable $keys, $val): iterable {
+		$v = &$itr;
+
+		foreach ($keys as $k) {
+			if (!is_iterable($v) || !isset($v[$k])) {
+				throw new InvalidArgumentException(
+					sprintf('Did not find path %s in structure %s',
+						json_encode($k),
+						json_encode($itr)
+					)
+				);
+			}
+
+			$v = &$v[$k];
+		}
+
+		$v = is_callable($val) ? $val($v, $k, $itr) : $val;
+
+		return $itr;
+	}
+
+	/**
+	 * Assign value from specific array key
+	 * 
+	 * @example
+	 * // in native PHP
+	 * (isset($itr['foo']['bar']['baz'])) ? $itr['foo']['bar']['baz'] = $itr['foo']['bar']['baz'] = $val;
+	 * 
+	 * // The above equals
+	 * \Dash\Iterables\assign($itr, ['foo', 'bar', 'baz'], $val);
+	 * 
+	 * @param  iterable    $itr
+	 * @param  iterable    $keys
+	 * @param  mixed|NULL  $itr
+	 * @return iterable
+	 */
+	public static function assign(iterable $itr, iterable $keys, $val): iterable
+	{
+		$v = &$itr;
+
+		foreach ($keys as $k) {
+			if (!is_iterable($v)) {
+				$v = [];
+			}
+			$v = &$v[$k];
+		}
+
+		$v = is_callable($val) ? $val($v, $k, $itr) : $val;
+
+		return $itr;
+	}
+
+	/**
+	 * Insert value by specifying position to iterable
+	 * 
+	 * @param  iterable $arr
+	 * @param  int      $pos
+	 * @param  array    $val Key value set
 	 * @return array
 	 */
-	public static function insert(array $arr, int $idx, $val): array {
-		return array_merge(array_splice($arr, 0, $idx), $val, $arr);
+	public static function insert(iterable $itr, int $pos, array $val): array {
+		$arr = is_array( $itr ) ? $itr : self::toArray($itr);
+		return array_merge(array_splice($arr, 0, $pos), $val, $arr);
 	}
 
 	/**
 	 * Insert into first position
 	 * 
-	 * @param  array $arr
-	 * @param  mixed $val
+	 * @param  iterable $arr
+	 * @param  array    $val Key - Value set
 	 * @return array
 	 */
-	public static function prepend(array $arr, $val): array {
+	public static function prepend(iterable $itr, array $val): array {
+		$arr = is_array( $itr ) ? $itr : self::toArray($itr);
 		return array_merge([$val], $arr);
 	}
 
 	/**
 	 * Insert into last position
 	 * 
-	 * @param  array $arr
-	 * @param  mixed $val
+	 * @param  iterable $itr
+	 * @param  array    $val Key - Value set
 	 * @return iterable
 	 */
-	public static function append(array $arr, $val): array {
-		return array_merge($arr, [$val]);
-	} 
+	public static function append(iterable $itr, array $val): iterable {
+		foreach ( $val as $k => $v ) {
+			$itr[$k] = $v;
+		}
+		return $itr;
+	}
 
 	/**
 	 * Remove duplicate value from iterable
 	 * 
-	 * @param  array $arr
+	 * @param  iterable $arr
 	 * @return array
 	 */
-	public static function unique(array $arr): array {
-		return array_keys(array_flip($arr));
+	public static function unique(iterable $itr): array {
+		return array_keys(array_flip(is_array($itr) ? $itr : self::toArray($itr)));
 	}
 
 	/**
@@ -448,7 +535,7 @@ class Iterables {
 	 * @return array
 	 */
 	public static function takeWhile(iterable $itr, callable $fn): array {
-		$o = NULL;
+		$o = [];
 		foreach ($itr as $k => $v) {
 			if ( $fn($v, $k, $itr) !== TRUE ) {
 				break;			
@@ -467,8 +554,13 @@ class Iterables {
 	 * @return array
 	 */
 	public static function takeLastWhile(iterable $itr, callable $fn): array {
-		$o = NULL;
-		for( end($itr); key($itr) !== NULL; prev($itr) ) {
+		$o = [];
+		
+		if ( $itr instanceof Generator) {
+			$itr = self::toArray($itr);
+		}
+		
+		for( end($itr); ( $k = key($itr) ) !== NULL; prev($itr) ) {
 			$v = method_exists( $itr, 'current' )
 					? $itr->current()
 					: current($v);
@@ -566,97 +658,6 @@ class Iterables {
 
 		return $o;
 	}
-
-
-	/**
-	 * Get value from specific array key
-	 * 
-	 * @example
-	 * // in native PHP
-	 * (isset($data['foo']['bar']['baz'])) ? $data['foo']['bar']['baz'] : NULL;
-	 * 
-	 * // The above equals
-	 * \Dash\Iterables\getIn($data, ['foo', 'bar', 'baz']);
-	 * 
-	 * @param iterable    $data
-	 * @param iterable    $keys
-	 * @param mixed|NULL  $default
-	 */
-	public static function getIn(iterable $data, iterable $keys, $default = NULL)
-	{
-		if (count($keys) === 1 && isset($data[$keys[0]])) {
-			return $data[$keys[0]];
-		}
-
-		return ($v = self::hasKeys($data, $keys)) ? $v : $default;
-	}
-
-	/**
-	 * Update value from specific array key
-	 * 
-	 * @example
-	 * 
-	 * // in native PHP
-	 * (isset($itr['foo']['bar']['baz'])) ? $itr['foo']['bar']['baz'] = $val
-	 * 
-	 * // The above equals
-	 * \Dash\Iterables\updateIn($itr, ['foo', 'bar', 'baz'], $val)
-	 * 
-	 * @param iterable  $itr
-	 * @param iterable  $keys
-	 * @param mixed     $val
-	 */
-	public static function update(iterable $itr, iterable $keys, $val) {
-		$v = &$itr;
-
-		foreach ($keys as $k) {
-			if (!is_iterable($v) || !isset($v[$k])) {
-				throw new InvalidArgumentException(
-					sprintf('Did not find path %s in structure %s',
-						json_encode($k),
-						json_encode($itr)
-					)
-				);
-			}
-
-			$v = &$v[$k];
-		}
-
-		$v = is_callable($val) ? $val($v, $k, $itr) : $val;
-
-		return $itr;
-	}
-
-	/**
-	 * Assign value from specific array key
-	 * 
-	 * @example
-	 * // in native PHP
-	 * (isset($itr['foo']['bar']['baz'])) ? $itr['foo']['bar']['baz'] = $itr['foo']['bar']['baz'] = $val;
-	 * 
-	 * // The above equals
-	 * \Dash\Iterables\assign($itr, ['foo', 'bar', 'baz'], $val);
-	 * 
-	 * @param iterable    $itr
-	 * @param iterable    $keys
-	 * @param mixed|NULL  $itr
-	 */
-	public static function assign(iterable $itr, iterable $keys, $val)
-	{
-		$v = &$itr;
-
-		foreach ($keys as $k) {
-			if (!is_iterable($v)) {
-				$v = [];
-			}
-			$v = &$v[$k];
-		}
-
-		$v = is_callable($val) ? $val($v, $k, $itr) : $val;
-
-		return $itr;
-	}
-
 
 	/**
 	 * Insert a delimiter value between each element of a collection.
